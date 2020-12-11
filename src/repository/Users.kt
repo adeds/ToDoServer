@@ -1,6 +1,5 @@
 package id.ade.repository
 
-import id.ade.util.Constant
 import id.ade.util.Constant.DatabaseKey.User.KEY_DISPLAY_NAME
 import id.ade.util.Constant.DatabaseKey.User.KEY_EMAIL
 import id.ade.util.Constant.DatabaseKey.User.KEY_ID

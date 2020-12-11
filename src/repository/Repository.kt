@@ -8,4 +8,5 @@ interface Repository {
                         passwordHash: String): User?
     suspend fun findUser(userId: Int): User?
     suspend fun findUserByEmail(email: String): User?
+    suspend fun isUserExist(email: String): Boolean
 }

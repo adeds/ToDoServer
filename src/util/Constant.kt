@@ -39,5 +39,11 @@ class Constant {
             const val JWT_SECRET = "JWT_SECRET"
             const val AUTHENTICATION = "Authentication"
         }
+
+        object RoutesKey{
+            const val PASSWORD = "password"
+            const val DISPLAY_NAME = "displayName"
+            const val EMAIL = "email"
+        }
     }
 }

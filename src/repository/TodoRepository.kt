@@ -2,9 +2,7 @@ package id.ade.repository
 
 import id.ade.databse.DatabaseFactory.dbQuery
 import id.ade.models.User
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.statements.InsertStatement
 
 class TodoRepository : Repository {
@@ -37,6 +35,13 @@ class TodoRepository : Repository {
         Users.select { Users.email.eq(email) }
             .map { rowToUser(it) }.singleOrNull()
     }
+
+    override suspend fun isUserExist(email: String) =
+        dbQuery {
+            Users.select { Users.email.eq(email) }
+                .map { rowToUser(it) }.isNullOrEmpty().not()
+        }
+
 
     private fun rowToUser(row: ResultRow?): User? {
         if (row == null) {
