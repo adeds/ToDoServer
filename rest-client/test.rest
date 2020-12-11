@@ -1,0 +1,26 @@
+POST
+http://localhost:8080/v1/users/login
+
+# Headers:
+@Content-Type: application/x-www-form-urlencoded
+
+# also can be:
+&email=abc
+&password=123
+%%%
+# Duration: 31 ms
+# POST
+# http://localhost:8080/v1/users/login
+# Headers
+# @Content-Type: application/x-www-form-urlencoded
+# password=123&email=abc
+
+
+# status 200
+
+@Set-Cookie: MY_SESSION=userId%3D%2523i1; Max-Age=604800; Expires=Fri, 18 Dec 2020 15:59:25 GMT; Path=/; HttpOnly; SameSite=lax; $x-enc=URI_ENCODING
+@Content-Length: 214
+@Content-Type: text/plain; charset=UTF-8
+@Connection: keep-alive
+
+eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBdXRoZW50aWNhdGlvbiIsImlzcyI6InRvZG9TZXJ2ZXIiLCJpZCI6MSwiZXhwIjoxNjA3Nzg4NzY1fQ.eCyauh9UtW9gExuIeJqt9feBEiyj9WI69LlBEhNrfuNEcAfw2v8tQLObtRxzYkMVJXS4dYH4mrqiRAWdX-_ccw
