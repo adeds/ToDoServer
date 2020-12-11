@@ -2,7 +2,7 @@ package id.ade.util
 
 class Constant {
 
-    object General{
+    object General {
         const val PROJECT_NAME = "todoServer"
     }
 
@@ -40,10 +40,14 @@ class Constant {
             const val AUTHENTICATION = "Authentication"
         }
 
-        object RoutesKey{
+        object RoutesKey {
             const val PASSWORD = "password"
             const val DISPLAY_NAME = "displayName"
             const val EMAIL = "email"
+
+            const val ID = "id"
+            const val TODO = "todo"
+            const val DONE = "done"
         }
     }
 }
