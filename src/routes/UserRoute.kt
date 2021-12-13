@@ -2,10 +2,13 @@ package id.ade.routes
 
 import id.ade.auth.JwtService
 import id.ade.auth.MySession
+import id.ade.models.Login
+import id.ade.models.Message
 import id.ade.repository.Repository
 import id.ade.util.Constant.Environment.RoutesKey.DISPLAY_NAME
 import id.ade.util.Constant.Environment.RoutesKey.EMAIL
 import id.ade.util.Constant.Environment.RoutesKey.PASSWORD
+import id.ade.util.toJson
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.locations.*
@@ -43,13 +46,13 @@ fun Route.users(
 
         //Looks for the password parameter and returns an error if it doesn’t exist.
         val password = signupParameters[PASSWORD]
-            ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing Fields")
+            ?: return@post call.respond(HttpStatusCode.Unauthorized, Message("Missing Fields").toJson())
 
         val displayName = signupParameters[DISPLAY_NAME]
-            ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing Fields")
+            ?: return@post call.respond(HttpStatusCode.Unauthorized, Message("Missing Fields").toJson())
 
         val email = signupParameters[EMAIL]
-            ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing Fields")
+            ?: return@post call.respond(HttpStatusCode.Unauthorized, Message("Missing Fields").toJson())
 
         //Produces a hash string from the password.
         val hash = hashFunction(password) // 5
@@ -57,31 +60,31 @@ fun Route.users(
 
             // check if email has been registered
             if (db.isUserExist(email))
-                call.respond(HttpStatusCode.BadRequest, "Email has been registered")
+                call.respond(HttpStatusCode.BadRequest, Message("Email has been registered").toJson())
             else {
                 //Adds a new user to the database.
                 val newUser = db.addUser(email, displayName, hash)
                 newUser?.userId?.let {
                     call.sessions.set(MySession(it))
                     call.respondText(
-                        jwtService.generateToken(newUser),
+                        Login(jwtService.generateToken(newUser)).toJson(),
                         status = HttpStatusCode.Created
                     )
                 }
             }
         } catch (e: Throwable) {
             application.log.error("Failed to register user", e)
-            call.respond(HttpStatusCode.BadRequest, "Problems creating User")
+            call.respond(HttpStatusCode.BadRequest, Message("Problems creating User").toJson())
         }
     }
 
     post<UserLoginRoute> { // 1
         val signinParameters = call.receive<Parameters>()
         val password = signinParameters[PASSWORD]
-            ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing Fields")
+            ?: return@post call.respond(HttpStatusCode.Unauthorized, Message("Missing Fields").toJson())
 
         val email = signinParameters[EMAIL]
-            ?: return@post call.respond(HttpStatusCode.Unauthorized, "Missing Fields")
+            ?: return@post call.respond(HttpStatusCode.Unauthorized, Message("Missing Fields").toJson())
 
         val hash = hashFunction(password)
 
@@ -91,17 +94,17 @@ fun Route.users(
                 currentUser?.userId?.let {
                     if (currentUser.passwordHash == hash) {
                         call.sessions.set(MySession(it))
-                        call.respondText(jwtService.generateToken(currentUser))
+                        call.respondText(Login(token = jwtService.generateToken(currentUser)).toJson())
                     } else {
-                        call.respond(HttpStatusCode.NotAcceptable, "Wrong Password")
+                        call.respond(HttpStatusCode.NotAcceptable, Message("Wrong Password").toJson())
                     }
                 }
-            }else{
-                call.respond(HttpStatusCode.NotFound, "User not found")
+            } else {
+                call.respond(HttpStatusCode.NotFound, Message("User not found").toJson())
             }
         } catch (e: Throwable) {
             application.log.error("Failed to register user", e)
-            call.respond(HttpStatusCode.BadRequest, "Problems retrieving User")
+            call.respond(HttpStatusCode.BadRequest, Message("Problems retrieving User").toJson())
         }
     }
 
